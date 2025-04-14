@@ -25,8 +25,11 @@ void	error_msg(const char *msg)
 
 void	clean_exit(int **pipes, int pipe_count, int infile, int outfile)
 {
-	close_pipes(pipes, pipe_count);
-	free_pipes(pipes, pipe_count);
+	if (pipes)
+	{
+		close_pipes(pipes, pipe_count);
+		free_pipes(pipes, pipe_count);
+	}
 	if (infile >= 0)
 		close(infile);
 	if (outfile >= 0)
@@ -46,9 +49,13 @@ void	display_usage(char *program_name)
 
 void	setup_normal_mode(char **argv, int *infile, int *outfile, int argc)
 {
+	if (!argv || !infile || !outfile || argc < 4)
+		return ;
+	
 	*infile = open(argv[1], O_RDONLY);
 	if (*infile < 0)
 		perror(argv[1]);
+	
 	*outfile = open(argv[argc - 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (*outfile < 0)
 		perror(argv[argc - 1]);

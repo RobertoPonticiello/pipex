@@ -35,6 +35,8 @@ char	**get_paths(char **envp)
 	char	*path_var;
 
 	i = 0;
+	if (!envp)
+		return (NULL);
 	while (envp[i])
 	{
 		if (strncmp(envp[i], "PATH=", 5) == 0)
@@ -45,23 +47,23 @@ char	**get_paths(char **envp)
 		return (NULL);
 	path_line = strdup(envp[i] + 5);
 	if (!path_line)
-		error_exit();
+		return (NULL);
 	paths = malloc(sizeof(char *) * 64);
 	if (!paths)
 	{
 		free(path_line);
-		error_exit();
+		return (NULL);
 	}
 	i = 0;
 	path_var = strtok(path_line, ":");
-	while (path_var != NULL)
+	while (path_var != NULL && i < 63)
 	{
 		paths[i] = strdup(path_var);
 		if (!paths[i])
 		{
 			free(path_line);
 			free_paths(paths);
-			error_exit();
+			return (NULL);
 		}
 		i++;
 		path_var = strtok(NULL, ":");
@@ -78,6 +80,8 @@ char	*check_path_access(char *cmd, char **paths)
 	int		i;
 
 	i = 0;
+	if (!cmd || !paths)
+		return (NULL);
 	while (paths[i])
 	{
 		tmp = strdup(paths[i]);
@@ -106,7 +110,7 @@ char	*find_command_path(char *cmd, char **envp)
 	char	**paths;
 	char	*path;
 
-	if (!cmd || !cmd[0])
+	if (!cmd || !cmd[0] || !envp)
 		return (NULL);
 	if (access(cmd, F_OK | X_OK) == 0)
 		return (strdup(cmd));
@@ -120,6 +124,8 @@ char	*find_command_path(char *cmd, char **envp)
 
 void	setup_heredoc(int *heredoc_pipe, char *limiter)
 {
+	if (!heredoc_pipe || !limiter)
+		return ;
 	if (pipe(heredoc_pipe) == -1)
 		error_exit();
 	here_doc_input(limiter, heredoc_pipe[1]);
