@@ -22,6 +22,8 @@ void	set_up_io_first(int infile, int *heredoc_pipe, int **pipes,
 	}
 	else
 	{
+		if (infile < 0)
+			exit(1);
 		if (dup2(infile, STDIN_FILENO) == -1)
 			exit(1);
 	}
@@ -42,6 +44,8 @@ void	set_up_io_last(int i, int **pipes, int outfile)
 {
 	if (dup2(pipes[i - 1][0], STDIN_FILENO) == -1)
 		error_exit();
+	if (outfile < 0)
+		exit(1);
 	if (dup2(outfile, STDOUT_FILENO) == -1)
 		exit(1);
 }
@@ -112,7 +116,7 @@ int	main(int argc, char **argv, char **envp)
 	outfile = -1;
 	if (argc < 5)
 		display_usage(argv[0]);
-	if (strcmp(argv[1], "here_doc") == 0)
+	if (argc > 1 && strcmp(argv[1], "here_doc") == 0)
 		here_doc_mode = 1;
 	if (here_doc_mode)
 	{

@@ -97,7 +97,8 @@ int	execute_command(char *cmd_str, char **envp, int **pipes,
 	if (!cmd_args[0])
 	{
 		free_cmd_args(cmd_args);
-		return (0);
+		close_all_fds(pipes, pipe_count, infile, outfile, heredoc_pipe, here_doc_mode);
+		exit(0);
 	}
 	path = find_command_path(cmd_args[0], envp);
 	if (!path)

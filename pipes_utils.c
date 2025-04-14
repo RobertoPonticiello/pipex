@@ -19,8 +19,10 @@ void	close_pipes(int **pipes, int count)
 	i = 0;
 	while (i < count)
 	{
-		close(pipes[i][0]);
-		close(pipes[i][1]);
+		if (pipes[i][0] >= 0)
+			close(pipes[i][0]);
+		if (pipes[i][1] >= 0)
+			close(pipes[i][1]);
 		i++;
 	}
 }
@@ -30,9 +32,12 @@ void	free_pipes(int **pipes, int count)
 	int	i;
 
 	i = 0;
+	if (!pipes)
+		return ;
 	while (i < count)
 	{
-		free(pipes[i]);
+		if (pipes[i])
+			free(pipes[i]);
 		i++;
 	}
 	free(pipes);
@@ -43,6 +48,8 @@ int	**create_pipes(int count)
 	int	**pipes;
 	int	i;
 
+	if (count <= 0)
+		return (NULL);
 	pipes = malloc(sizeof(int *) * count);
 	if (!pipes)
 		error_exit();
@@ -60,7 +67,10 @@ int	**create_pipes(int count)
 		if (pipe(pipes[i]) == -1)
 		{
 			while (i >= 0)
-				free(pipes[i--]);
+			{
+				free(pipes[i]);
+				i--;
+			}
 			free(pipes);
 			error_exit();
 		}
@@ -77,20 +87,27 @@ void	close_all_fds(int **pipes, int pipe_count, int infile,
 	i = 0;
 	while (i < pipe_count)
 	{
-		close(pipes[i][0]);
-		close(pipes[i][1]);
+		if (pipes && pipes[i])
+		{
+			if (pipes[i][0] >= 0)
+				close(pipes[i][0]);
+			if (pipes[i][1] >= 0)
+				close(pipes[i][1]);
+		}
 		i++;
 	}
 	if (!here_doc_mode && infile >= 0)
 		close(infile);
 	if (outfile >= 0)
 		close(outfile);
-	if (here_doc_mode)
+	if (here_doc_mode && heredoc_pipe[0] >= 0)
 		close(heredoc_pipe[0]);
 }
 
 void	setup_here_doc_mode(char **argv, int *outfile, int argc, int *heredoc_pipe)
 {
 	*outfile = open(argv[argc - 1], O_CREAT | O_WRONLY | O_APPEND, 0644);
+	if (*outfile < 0)
+		perror(argv[argc - 1]);
 	setup_heredoc(heredoc_pipe, argv[2]);
 }

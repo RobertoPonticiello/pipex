@@ -47,5 +47,9 @@ void	display_usage(char *program_name)
 void	setup_normal_mode(char **argv, int *infile, int *outfile, int argc)
 {
 	*infile = open(argv[1], O_RDONLY);
+	if (*infile < 0)
+		perror(argv[1]);
 	*outfile = open(argv[argc - 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (*outfile < 0)
+		perror(argv[argc - 1]);
 }
