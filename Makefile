@@ -19,7 +19,8 @@ SRCS = pipex.c \
        cmd_utils.c \
        path_utils.c \
        pipes_utils.c \
-	   pipex_utils.c
+	   pipex_utils.c \
+	   moreutils.c
 
 OBJS = $(SRCS:.c=.o)
 HEADER = pipex.h

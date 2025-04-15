@@ -72,5 +72,6 @@ char **handle_empty_cmd(void);
 int populate_paths(char **paths, char *path_line);
 char *find_path_line(char **envp);
 char **allocate_paths_array(void);
+char *create_full_path(const char *base_path, const char *cmd);
 
 #endif
