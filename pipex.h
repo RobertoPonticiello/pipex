@@ -67,4 +67,10 @@ char	**get_paths(char **envp);
 void	free_paths(char **paths);
 char	*check_path_access(char *cmd, char **paths);
 
+void populate_args(char **args, char *cmd_copy);
+char **handle_empty_cmd(void);
+int populate_paths(char **paths, char *path_line);
+char *find_path_line(char **envp);
+char **allocate_paths_array(void);
+
 #endif

@@ -1,32 +1,23 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   cmd_utils.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: student <student@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/13 12:00:00 by student           #+#    #+#             */
-/*   Updated: 2025/04/13 12:00:00 by student          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "pipex.h"
+
+char	**handle_empty_cmd(void)
+{
+	char	**args;
+
+	args = malloc(sizeof(char *));
+	if (!args)
+		error_exit();
+	args[0] = NULL;
+	return (args);
+}
 
 char	**parse_cmd(char *cmd)
 {
 	char	**args;
-	int		index;
 	char	*cmd_copy;
-	char	*token;
 
 	if (!cmd || cmd[0] == '\0')
-	{
-		args = malloc(sizeof(char *));
-		if (!args)
-			error_exit();
-		args[0] = NULL;
-		return (args);
-	}
+		return (handle_empty_cmd());
 	cmd_copy = strdup(cmd);
 	if (!cmd_copy)
 		error_exit();
@@ -36,6 +27,16 @@ char	**parse_cmd(char *cmd)
 		free(cmd_copy);
 		error_exit();
 	}
+	populate_args(args, cmd_copy);
+	free(cmd_copy);
+	return (args);
+}
+
+void	populate_args(char **args, char *cmd_copy)
+{
+	int		index;
+	char	*token;
+
 	index = 0;
 	token = strtok(cmd_copy, " ");
 	while (token != NULL && index < 63)
@@ -46,15 +47,12 @@ char	**parse_cmd(char *cmd)
 			while (index > 0)
 				free(args[--index]);
 			free(args);
-			free(cmd_copy);
 			error_exit();
 		}
 		index++;
 		token = strtok(NULL, " ");
 	}
 	args[index] = NULL;
-	free(cmd_copy);
-	return (args);
 }
 
 void	free_cmd_args(char **args)
@@ -75,7 +73,7 @@ void	free_cmd_args(char **args)
 char	*get_command_str(char **argv, int i, int here_doc_mode)
 {
 	char	*cmd_str;
-	
+
 	if (here_doc_mode)
 		cmd_str = strdup(argv[i + 3]);
 	else
@@ -83,69 +81,4 @@ char	*get_command_str(char **argv, int i, int here_doc_mode)
 	if (!cmd_str)
 		error_exit();
 	return (cmd_str);
-}
-
-int execute_command(char *cmd_str, char **envp, int **pipes, 
-	int pipe_count, int infile, int outfile, 
-	int *heredoc_pipe, int here_doc_mode)
-{
-char **cmd_args;
-char *path;
-
-cmd_args = parse_cmd(cmd_str);
-free(cmd_str); // Liberiamo subito cmd_str
-
-if (!cmd_args[0])
-{
-free_cmd_args(cmd_args);
-close_all_fds(pipes, pipe_count, infile, outfile, heredoc_pipe, here_doc_mode);
-exit(0);
-}
-
-path = find_command_path(cmd_args[0], envp);
-if (!path)
-{
-fprintf(stderr, "Command not found: %s\n", cmd_args[0]);
-free_cmd_args(cmd_args);
-close_all_fds(pipes, pipe_count, infile, outfile, heredoc_pipe, here_doc_mode);
-exit(127);
-}
-
-execve(path, cmd_args, envp);
-// Se execve fallisce, liberiamo memoria e usciamo
-free(path);
-free_cmd_args(cmd_args);
-perror("execve");
-close_all_fds(pipes, pipe_count, infile, outfile, heredoc_pipe, here_doc_mode);
-exit(1);
-}
-
-void	here_doc_input(const char *limiter, int pipe_fd)
-{
-	size_t	len;
-	char	*line;
-	size_t	line_len;
-
-	len = 0;
-	line = NULL;
-	if (!limiter || pipe_fd < 0)
-		return ;
-	while (1)
-	{
-		write(1, "heredoc> ", 9);
-		if (getline(&line, &len, stdin) == -1)
-			break ;
-		if (!line)
-			break ;
-		line_len = strlen(line);
-		if (line_len > 0 && line[line_len - 1] == '\n')
-			line[line_len - 1] = '\0';
-		if (strcmp(line, limiter) == 0)
-			break ;
-		write(pipe_fd, line, strlen(line));
-		write(pipe_fd, "\n", 1);
-	}
-	if (line)
-		free(line);
-	close(pipe_fd);
 }

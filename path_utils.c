@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   path_utils.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: student <student@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/13 12:00:00 by student           #+#    #+#             */
-/*   Updated: 2025/04/13 12:00:00 by student          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "pipex.h"
 
@@ -27,50 +16,33 @@ void	free_paths(char **paths)
 	free(paths);
 }
 
-char	**get_paths(char **envp)
+char **get_paths(char **envp)
 {
-	char	**paths;
-	int		i;
-	char	*path_line;
-	char	*path_var;
+    char **paths;
+    char *path_line;
+    int success;
 
-	i = 0;
-	if (!envp)
-		return (NULL);
-	while (envp[i])
-	{
-		if (strncmp(envp[i], "PATH=", 5) == 0)
-			break ;
-		i++;
-	}
-	if (!envp[i])
-		return (NULL);
-	path_line = strdup(envp[i] + 5);
-	if (!path_line)
-		return (NULL);
-	paths = malloc(sizeof(char *) * 64);
-	if (!paths)
-	{
-		free(path_line);
-		return (NULL);
-	}
-	i = 0;
-	path_var = strtok(path_line, ":");
-	while (path_var != NULL && i < 63)
-	{
-		paths[i] = strdup(path_var);
-		if (!paths[i])
-		{
-			free(path_line);
-			free_paths(paths);
-			return (NULL);
-		}
-		i++;
-		path_var = strtok(NULL, ":");
-	}
-	paths[i] = NULL;
-	free(path_line);
-	return (paths);
+    path_line = find_path_line(envp);
+    if (!path_line)
+        return (NULL);
+    
+    paths = allocate_paths_array();
+    if (!paths)
+    {
+        free(path_line);
+        return (NULL);
+    }
+    
+    success = populate_paths(paths, path_line);
+    free(path_line);
+    
+    if (!success)
+    {
+        free_paths(paths);
+        return (NULL);
+    }
+    
+    return (paths);
 }
 
 char	*check_path_access(char *cmd, char **paths)
