@@ -70,14 +70,14 @@ void	free_cmd_args(char **args)
 	free(args);
 }
 
-char	*get_command_str(char **argv, int i, int here_doc_mode)
+char	*get_command_str(t_pipex *pipex, int i)
 {
 	char	*cmd_str;
 
-	if (here_doc_mode)
-		cmd_str = strdup(argv[i + 3]);
+	if (pipex->here_doc_mode)
+		cmd_str = strdup(pipex->argv[i + 3]);
 	else
-		cmd_str = strdup(argv[i + 2]);
+		cmd_str = strdup(pipex->argv[i + 2]);
 	if (!cmd_str)
 		error_exit();
 	return (cmd_str);
