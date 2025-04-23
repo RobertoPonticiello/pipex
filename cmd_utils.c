@@ -50,7 +50,7 @@ void	populate_args(char **args, char *cmd_copy)
 	char	*token;
 
 	index = 0;
-	token = strtok(cmd_copy, " ");
+	token = ft_strtok(cmd_copy, " ");
 	while (token != NULL && index < 63)
 	{
 		args[index] = strdup(token);
@@ -62,7 +62,7 @@ void	populate_args(char **args, char *cmd_copy)
 			error_exit();
 		}
 		index++;
-		token = strtok(NULL, " ");
+		token = ft_strtok(NULL, " ");
 	}
 	args[index] = NULL;
 }

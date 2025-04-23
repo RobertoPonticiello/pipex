@@ -39,12 +39,10 @@ void	clean_exit(t_pipex *pipex)
 
 void	display_usage(char *program_name)
 {
-	fprintf(stderr, "Usage:\n");
-	fprintf(stderr,
-		"Normal: %s infile cmd1 cmd2 ... cmdN outfile\n",
+	ft_printf("Usage:\n");
+	ft_printf("Normal: %s infile cmd1 cmd2 ... cmdN outfile\n",
 		program_name);
-	fprintf(stderr,
-		"here_doc: %s here_doc LIMITER cmd1 cmd2 ... cmdN outfile\n",
+	ft_printf("here_doc: %s here_doc LIMITER cmd1 cmd2 ... cmdN outfile\n",
 		program_name);
 	exit(EXIT_FAILURE);
 }

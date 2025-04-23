@@ -21,6 +21,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <errno.h>
+# include "ft_printf/ft_printf.h"
 
 typedef struct s_pipex
 {
@@ -70,5 +71,6 @@ int		wait_for_processes(t_pipex *pipex);
 void	initialize_pipex(t_pipex *pipex, int argc, char **argv, char **envp);
 void	process_heredoc_line(char *line, const char *limiter,
 			int pipe_fd, int *should_break);
+char	*ft_strtok(char *str, const char *delim);
 
 #endif

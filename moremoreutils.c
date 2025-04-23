@@ -33,3 +33,38 @@ void	process_heredoc_line(char *line, const char *limiter,
 	write(pipe_fd, line, strlen(line));
 	write(pipe_fd, "\n", 1);
 }
+
+static int	is_delim(char c, const char *delim)
+{
+	int	i;
+
+	i = 0;
+	while (delim[i])
+	{
+		if (c == delim[i])
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+char	*ft_strtok(char *str, const char *delim)
+{
+	static char	*save;
+	char		*start;
+
+	if (str)
+		save = str;
+	if (!save)
+		return (NULL);
+	while (*save && is_delim(*save, delim))
+		save++;
+	if (!*save)
+		return (NULL);
+	start = save;
+	while (*save && !is_delim(*save, delim))
+		save++;
+	if (*save)
+		*save++ = '\0';
+	return (start);
+}

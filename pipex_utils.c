@@ -28,7 +28,7 @@ int	execute_command(char *cmd_str, t_pipex *pipex)
 	path = find_command_path(cmd_args[0], pipex->envp);
 	if (!path)
 	{
-		fprintf(stderr, "Command not found: %s\n", cmd_args[0]);
+		ft_printf("Command not found: %s\n", cmd_args[0]);
 		free_cmd_args(cmd_args);
 		close_all_fds(pipex);
 		exit(127);
@@ -94,14 +94,14 @@ int	populate_paths(char **paths, char *path_line)
 	char	*path_var;
 
 	i = 0;
-	path_var = strtok(path_line, ":");
+	path_var = ft_strtok(path_line, ":");
 	while (path_var != NULL && i < 63)
 	{
 		paths[i] = strdup(path_var);
 		if (!paths[i])
 			return (0);
 		i++;
-		path_var = strtok(NULL, ":");
+		path_var = ft_strtok(NULL, ":");
 	}
 	paths[i] = NULL;
 	return (1);
