@@ -30,7 +30,7 @@ char	**parse_cmd(char *cmd)
 
 	if (!cmd || cmd[0] == '\0')
 		return (handle_empty_cmd());
-	cmd_copy = strdup(cmd);
+	cmd_copy = ft_strdup(cmd);
 	if (!cmd_copy)
 		error_exit();
 	args = malloc(sizeof(char *) * 64);
@@ -53,7 +53,7 @@ void	populate_args(char **args, char *cmd_copy)
 	token = ft_strtok(cmd_copy, " ");
 	while (token != NULL && index < 63)
 	{
-		args[index] = strdup(token);
+		args[index] = ft_strdup(token);
 		if (!args[index])
 		{
 			while (index > 0)
@@ -87,9 +87,9 @@ char	*get_command_str(t_pipex *pipex, int i)
 	char	*cmd_str;
 
 	if (pipex->here_doc_mode)
-		cmd_str = strdup(pipex->argv[i + 3]);
+		cmd_str = ft_strdup(pipex->argv[i + 3]);
 	else
-		cmd_str = strdup(pipex->argv[i + 2]);
+		cmd_str = ft_strdup(pipex->argv[i + 2]);
 	if (!cmd_str)
 		error_exit();
 	return (cmd_str);

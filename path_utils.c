@@ -57,18 +57,18 @@ char	*create_full_path(const char *base_path, const char *cmd)
 	char	*tmp;
 	char	*full_path;
 
-	tmp = strdup(base_path);
+	tmp = ft_strdup(base_path);
 	if (!tmp)
 		return (NULL);
-	full_path = malloc(strlen(tmp) + strlen(cmd) + 2);
+	full_path = malloc(ft_strlen(tmp) + ft_strlen(cmd) + 2);
 	if (!full_path)
 	{
 		free(tmp);
 		return (NULL);
 	}
-	strcpy(full_path, tmp);
-	strcat(full_path, "/");
-	strcat(full_path, cmd);
+	ft_strcpy(full_path, tmp);
+	ft_strcat(full_path, "/");
+	ft_strcat(full_path, cmd);
 	free(tmp);
 	return (full_path);
 }
@@ -102,7 +102,7 @@ char	*find_command_path(char *cmd, char **envp)
 	if (!cmd || !cmd[0] || !envp)
 		return (NULL);
 	if (access(cmd, F_OK | X_OK) == 0)
-		return (strdup(cmd));
+		return (ft_strdup(cmd));
 	paths = get_paths(envp);
 	if (!paths)
 		return (NULL);

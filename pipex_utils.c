@@ -43,11 +43,9 @@ int	execute_command(char *cmd_str, t_pipex *pipex)
 
 void	here_doc_input(const char *limiter, int pipe_fd)
 {
-	size_t	len;
 	char	*line;
 	int		should_break;
 
-	len = 0;
 	line = NULL;
 	should_break = 0;
 	if (!limiter || pipe_fd < 0)
@@ -55,7 +53,8 @@ void	here_doc_input(const char *limiter, int pipe_fd)
 	while (!should_break)
 	{
 		write(1, "heredoc> ", 9);
-		if (getline(&line, &len, stdin) == -1)
+		line = get_next_line(0);
+		if (line == NULL)
 			break ;
 		process_heredoc_line(line, limiter, pipe_fd, &should_break);
 	}
@@ -73,8 +72,8 @@ char	*find_path_line(char **envp)
 		return (NULL);
 	while (envp[i])
 	{
-		if (strncmp(envp[i], "PATH=", 5) == 0)
-			return (strdup(envp[i] + 5));
+		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+			return (ft_strdup(envp[i] + 5));
 		i++;
 	}
 	return (NULL);
@@ -97,7 +96,7 @@ int	populate_paths(char **paths, char *path_line)
 	path_var = ft_strtok(path_line, ":");
 	while (path_var != NULL && i < 63)
 	{
-		paths[i] = strdup(path_var);
+		paths[i] = ft_strdup(path_var);
 		if (!paths[i])
 			return (0);
 		i++;
