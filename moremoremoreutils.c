@@ -47,3 +47,22 @@ char	*ft_strcat(char *dst, const char *src)
 	dst[dlen + i] = '\0';
 	return (dst);
 }
+
+void	handle_io_error(t_pipex *pipex)
+{
+	close_all_fds(pipex);
+	free_pipes(pipex->pipes, pipex->cmd_count - 1);
+	error_exit();
+}
+
+void	cclean_exit(t_pipex *pipex, char **cmd_args, char *path, int exit_code)
+{
+	if (path)
+		free(path);
+	if (cmd_args)
+		free_cmd_args(cmd_args);
+	close_all_fds(pipex);
+	if (pipex->pipes)
+		free_pipes(pipex->pipes, pipex->cmd_count - 1);
+	exit(exit_code);
+}

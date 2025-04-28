@@ -55,8 +55,8 @@ int		execute_command(char *cmd_str, t_pipex *pipex);
 void	child_process(int i, t_pipex *pipex);
 int		process_commands(t_pipex *pipex);
 void	set_up_io_first(t_pipex *pipex);
-void	set_up_io_middle(int i, int **pipes);
-void	set_up_io_last(int i, int **pipes, int outfile);
+void	set_up_io_middle(int i, t_pipex *pipex);
+void	set_up_io_last(int i, t_pipex *pipex);
 char	*find_command_path(char *cmd, char **envp);
 char	**get_paths(char **envp);
 void	free_paths(char **paths);
@@ -78,5 +78,7 @@ char	*ft_strdup(const char *s);
 int		ft_strlen(const char *str);
 char	*ft_strcpy(char *destination, const char *source);
 char	*ft_strcat(char *dst, const char *src);
+void	handle_io_error(t_pipex *pipex);
+void	cclean_exit(t_pipex *pipex, char **cmd_args, char *path, int exit_code);
 
 #endif

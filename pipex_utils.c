@@ -29,16 +29,12 @@ int	execute_command(char *cmd_str, t_pipex *pipex)
 	if (!path)
 	{
 		ft_printf("Command not found: %s\n", cmd_args[0]);
-		free_cmd_args(cmd_args);
-		close_all_fds(pipex);
-		exit(127);
+		cclean_exit(pipex, cmd_args, NULL, 127);
 	}
 	execve(path, cmd_args, pipex->envp);
-	free(path);
-	free_cmd_args(cmd_args);
 	perror("execve");
-	close_all_fds(pipex);
-	exit(1);
+	cclean_exit(pipex, cmd_args, path, 1);
+	return (1);
 }
 
 void	here_doc_input(const char *limiter, int pipe_fd)
@@ -54,12 +50,12 @@ void	here_doc_input(const char *limiter, int pipe_fd)
 	{
 		write(1, "heredoc> ", 9);
 		line = get_next_line(0);
-		if (line == NULL)
-			break ;
 		process_heredoc_line(line, limiter, pipe_fd, &should_break);
-	}
-	if (line)
 		free(line);
+		line = NULL;
+		if (should_break)
+			break ;
+	}
 	close(pipe_fd);
 }
 
