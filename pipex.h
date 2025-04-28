@@ -80,5 +80,6 @@ char	*ft_strcpy(char *destination, const char *source);
 char	*ft_strcat(char *dst, const char *src);
 void	handle_io_error(t_pipex *pipex);
 void	cclean_exit(t_pipex *pipex, char **cmd_args, char *path, int exit_code);
+void	handle_command_not_found(t_pipex *pipex, char **cmd_args);
 
 #endif

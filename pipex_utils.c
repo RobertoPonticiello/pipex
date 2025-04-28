@@ -27,10 +27,7 @@ int	execute_command(char *cmd_str, t_pipex *pipex)
 	}
 	path = find_command_path(cmd_args[0], pipex->envp);
 	if (!path)
-	{
-		ft_printf("Command not found: %s\n", cmd_args[0]);
-		cclean_exit(pipex, cmd_args, NULL, 127);
-	}
+		handle_command_not_found(pipex, cmd_args);
 	execve(path, cmd_args, pipex->envp);
 	perror("execve");
 	cclean_exit(pipex, cmd_args, path, 1);
