@@ -73,9 +73,9 @@ void	initialize_pipex(t_pipex *pipex, int argc, char **argv, char **envp);
 void	process_heredoc_line(char *line, const char *limiter,
 			int pipe_fd, int *should_break);
 char	*ft_strtok(char *str, const char *delim);
-int	ft_strncmp(const char *s1, const char *s2, size_t n);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strdup(const char *s);
-int	ft_strlen(const char *str);
+int		ft_strlen(const char *str);
 char	*ft_strcpy(char *destination, const char *source);
 char	*ft_strcat(char *dst, const char *src);
 
